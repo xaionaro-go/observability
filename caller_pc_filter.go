@@ -20,6 +20,8 @@ func CallerPCFilter(
 		}
 		file, _ := fn.FileLine(pc)
 		switch {
+		case strings.Contains(file, "assert.go"):
+			return false
 		case strings.Contains(file, "context.go"):
 			return false
 		case strings.Contains(file, "log_writer.go"):
