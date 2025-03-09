@@ -30,6 +30,8 @@ func CallerPCFilter(
 			return false
 		case strings.Contains(file, "runtime.go"):
 			return false
+		case strings.Contains(file, "_test.go"):
+			return false
 		}
 		return true
 	}
