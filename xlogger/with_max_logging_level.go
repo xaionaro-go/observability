@@ -1,6 +1,8 @@
 package xlogger
 
 import (
+	"context"
+
 	"github.com/facebookincubator/go-belt/tool/logger"
 	"github.com/facebookincubator/go-belt/tool/logger/adapter"
 )
@@ -30,4 +32,9 @@ func (e *EmitterWithMaxLoggingLevel) Emit(
 		entry.Level = e.MaxLevel
 	}
 	e.Emitter.Emit(entry)
+}
+
+func CtxWithMaxLoggingLevel(ctx context.Context, maxLevel logger.Level) context.Context {
+	emitter := &EmitterWithMaxLoggingLevel{Emitter: logger.FromCtx(ctx).Emitter(), MaxLevel: maxLevel}
+	return logger.CtxWithLogger(ctx, adapter.LoggerFromEmitter(emitter))
 }
