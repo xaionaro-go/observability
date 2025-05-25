@@ -188,7 +188,7 @@ func (h *ErrorMonitorLoggerHook) sendReport(
 	}
 }
 
-func (h *ErrorMonitorLoggerHook) senderLoop() {
+func (h *ErrorMonitorLoggerHook) senderLoop(context.Context) {
 	for {
 		message := <-h.SendChan
 		h.ErrorMonitor.Emitter().Emit(&errmontypes.Event{
