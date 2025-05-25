@@ -8,6 +8,8 @@ import (
 	"github.com/facebookincubator/go-belt/pkg/field"
 )
 
+var EnableGoroutineTracing = false
+
 func Call(ctx context.Context, fn func(context.Context)) {
 	defer func() { PanicIfNotNil(ctx, recover()) }()
 	fn(ctx)
@@ -19,35 +21,39 @@ func CallSafe(ctx context.Context, fn func(context.Context)) {
 }
 
 func Go(ctx context.Context, fn func(context.Context)) {
-	stack := debug.Stack()
-	belt.GetFields(ctx).ForEachField(func(f *field.Field) bool {
-		if f.Key == "goroutines_stack" {
-			prevStack, ok := f.Value.([]byte)
-			if !ok {
-				return true
+	if EnableGoroutineTracing {
+		stack := debug.Stack()
+		belt.GetFields(ctx).ForEachField(func(f *field.Field) bool {
+			if f.Key == "goroutines_stack" {
+				prevStack, ok := f.Value.([]byte)
+				if !ok {
+					return true
+				}
+				stack = append(stack, prevStack...)
+				return false
 			}
-			stack = append(stack, prevStack...)
-			return false
-		}
-		return true
-	})
-	ctx = belt.WithField(ctx, "goroutines_stack", string(stack))
+			return true
+		})
+		ctx = belt.WithField(ctx, "goroutines_stack", string(stack))
+	}
 	go Call(ctx, fn)
 }
 
 func GoSafe(ctx context.Context, fn func(context.Context)) {
-	stack := debug.Stack()
-	belt.GetFields(ctx).ForEachField(func(f *field.Field) bool {
-		if f.Key == "goroutines_stack" {
-			prevStack, ok := f.Value.([]byte)
-			if !ok {
-				return true
+	if EnableGoroutineTracing {
+		stack := debug.Stack()
+		belt.GetFields(ctx).ForEachField(func(f *field.Field) bool {
+			if f.Key == "goroutines_stack" {
+				prevStack, ok := f.Value.([]byte)
+				if !ok {
+					return true
+				}
+				stack = append(stack, prevStack...)
+				return false
 			}
-			stack = append(stack, prevStack...)
-			return false
-		}
-		return true
-	})
-	ctx = belt.WithField(ctx, "goroutines_stack", string(stack))
+			return true
+		})
+		ctx = belt.WithField(ctx, "goroutines_stack", string(stack))
+	}
 	go CallSafe(ctx, fn)
 }
