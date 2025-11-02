@@ -1,8 +1,8 @@
 module github.com/xaionaro-go/observability
 
-go 1.23.0
+go 1.24.0
 
-toolchain go1.24.1
+toolchain go1.24.2
 
 require (
 	github.com/DataDog/gostackparse v0.7.0
@@ -13,7 +13,7 @@ require (
 	github.com/xaionaro-go/object v0.0.0-20241026212449-753ce10ec94c
 	github.com/xaionaro-go/secret v0.0.0-20250111141743-ced12e1082c2
 	github.com/xaionaro-go/xsync v0.0.0-20250111141039-3e7f31b1a2c6
-	golang.org/x/oauth2 v0.25.0
+	golang.org/x/oauth2 v0.32.0
 )
 
 require (
