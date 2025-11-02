@@ -15,7 +15,11 @@ func PanicIfNotNil(ctx context.Context, r any) {
 	if r == nil {
 		return
 	}
-	ReportPanicIfNotNil(ctx, r)
+	Panic(ctx, r)
+}
+
+func Panic(ctx context.Context, r any) {
+	ReportPanic(ctx, r)
 	time.Sleep(time.Second)
 	panic(fmt.Sprintf("%#+v", r))
 }
@@ -24,6 +28,10 @@ func ReportPanicIfNotNil(ctx context.Context, r any) bool {
 	if r == nil {
 		return false
 	}
+	return ReportPanic(ctx, r)
+}
+
+func ReportPanic(ctx context.Context, r any) bool {
 	logger.FromCtx(ctx).
 		WithField("error_event_exception_stack_trace", string(debug.Stack())).
 		Errorf("got panic: %v", r)
